@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Animated, type ViewStyle } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Props {
   children: React.ReactNode;
@@ -7,20 +8,28 @@ interface Props {
 }
 
 export default function FadeInView({ children, style }: Props) {
-  const anim = useRef(new Animated.Value(0)).current;
+  const anim = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    Animated.timing(anim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      anim.setValue(0.92);
+      Animated.spring(anim, {
+        toValue: 1,
+        tension: 80,
+        friction: 10,
+        useNativeDriver: true,
+      }).start();
+    }, [])
+  );
 
   return (
     <Animated.View
       style={[
-        { flex: 1, opacity: anim, transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }] },
+        {
+          flex: 1,
+          opacity: anim,
+          transform: [{ scale: anim }],
+        },
         style,
       ]}
     >
