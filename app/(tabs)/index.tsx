@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import FadeInView from '../../src/components/FadeInView';
 import { useGameLogic } from '../../src/hooks/useGameLogic';
 import { GameBoard } from '../../src/components/GameBoard';
 import { Keyboard } from '../../src/components/Keyboard';
@@ -169,6 +170,8 @@ export default function GameScreen() {
   }, [state.gameStatus]);
 
   return (
+
+    <FadeInView backgroundColor={colors.background}>
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleNewGame} style={styles.headerLeft}>
@@ -282,6 +285,7 @@ export default function GameScreen() {
         )}
       </Modal>
     </View>
+    </FadeInView>
   );
 }
 

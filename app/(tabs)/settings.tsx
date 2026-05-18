@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import FadeInView from '../../src/components/FadeInView';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { Keyboard } from '../../src/components/Keyboard';
 import { loadSettings, saveSettings, saveCustomWord, loadCustomWordsFromStorage, removeCustomWord } from '../../src/utils/storage';
@@ -105,6 +106,7 @@ export default function SettingsScreen() {
   }, []);
 
   return (
+    <FadeInView backgroundColor={colors.background}>
     <ScrollView
       style={[styles.scroll, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.contentContainer}
@@ -269,6 +271,7 @@ export default function SettingsScreen() {
         )}
       </View>
     </ScrollView>
+    </FadeInView>
   );
 }
 
