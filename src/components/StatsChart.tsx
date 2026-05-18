@@ -44,23 +44,27 @@ export function StatsChart({ distribution, currentGuessCount }: StatsChartProps)
               >
                 {index + 1}
               </SvgText>
-              <Rect
-                x={30}
-                y={index * 28 + 4}
-                width={barWidths[index]}
-                height={22}
-                fill={barColor}
-                rx={2}
-              />
-              <SvgText
-                x={30 + barWidths[index] - 8}
-                y={index * 28 + 18}
-                fill="#FFFFFF"
-                fontSize={12}
-                textAnchor="end"
-              >
-                {count}
-              </SvgText>
+              {count > 0 && (
+                <>
+                  <Rect
+                    x={30}
+                    y={index * 28 + 4}
+                    width={barWidths[index]}
+                    height={22}
+                    fill={barColor}
+                    rx={2}
+                  />
+                  <SvgText
+                    x={30 + barWidths[index] - 8}
+                    y={index * 28 + 18}
+                    fill="#FFFFFF"
+                    fontSize={12}
+                    textAnchor="end"
+                  >
+                    {count}
+                  </SvgText>
+                </>
+              )}
             </React.Fragment>
           );
         })}
