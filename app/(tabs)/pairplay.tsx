@@ -84,44 +84,69 @@ export default function PairPlayScreen() {
           5 harfli bir kelime girin,{'\n'}arkadaşınız bulmaya çalışsın
         </Text>
 
-        {pairStats && (
+        {pairStats && (() => {
+          const sumScore = (arr: PairPlayGameRecord[]) => arr.reduce((s, r) => s + r.score, 0);
+          const sumGuesses = (arr: PairPlayGameRecord[]) => arr.reduce((s, r) => s + r.guesses, 0);
+          const p1Total = sumScore(pairStats.player1);
+          const p2Total = sumScore(pairStats.player2);
+          const p1Best = pairStats.player1.length ? Math.max(...pairStats.player1.map(r => r.score)) : 0;
+          const p2Best = pairStats.player2.length ? Math.max(...pairStats.player2.map(r => r.score)) : 0;
+          return (
           <View style={[styles.statsBox, { borderColor: colors.tileBorder }]}>
+            <Text style={[styles.statsBoxTitle, { color: colors.text }]}>Puan Tablosu</Text>
             <View style={styles.statsRow}>
-              <View style={styles.statsPlayer}>
-                <Text style={[styles.statsPlayerTitle, { color: colors.text }]}>
-                  1. Oyuncu{pairStats.currentPlayer === 1 ? ' ▶' : ''}
-                </Text>
-                <Text style={[styles.statsLine, { color: colors.textSecondary }]}>
-                  Toplam: {pairStats.player1.length} oyun, {pairStats.player1.reduce((s, r) => s + r.score, 0)}p
-                </Text>
-                {pairStats.player1.map((rec, i) => (
-                  <Text key={i} style={[styles.statsLine, { color: colors.textSecondary }]}>
-                    {i + 1}. oyun: {rec.time}sn - {rec.guesses}/6 - {rec.score}p
-                  </Text>
-                ))}
-              </View>
-              <View style={styles.statsDivider} />
-              <View style={styles.statsPlayer}>
-                <Text style={[styles.statsPlayerTitle, { color: colors.text }]}>
-                  2. Oyuncu{pairStats.currentPlayer === 2 ? ' ▶' : ''}
-                </Text>
-                <Text style={[styles.statsLine, { color: colors.textSecondary }]}>
-                  Toplam: {pairStats.player2.length} oyun, {pairStats.player2.reduce((s, r) => s + r.score, 0)}p
-                </Text>
-                {pairStats.player2.map((rec, i) => (
-                  <Text key={i} style={[styles.statsLine, { color: colors.textSecondary }]}>
-                    {i + 1}. oyun: {rec.time}sn - {rec.guesses}/6 - {rec.score}p
-                  </Text>
-                ))}
-              </View>
+              {[
+                { label: '1. Oyuncu', records: pairStats.player1, total: p1Total, best: p1Best, active: pairStats.currentPlayer === 1 },
+                { label: '2. Oyuncu', records: pairStats.player2, total: p2Total, best: p2Best, active: pairStats.currentPlayer === 2 },
+              ].map((player) => (
+                <View key={player.label} style={styles.statsPlayer}>
+                  <View style={[styles.playerHeader, { backgroundColor: player.active ? colors.tileCorrect : colors.keyBackground }]}>
+                    <Text style={[styles.playerTitle, { color: player.active ? '#fff' : colors.text }]}>
+                      {player.label}
+                    </Text>
+                    <Text style={[styles.playerScore, { color: player.active ? '#fff' : colors.tilePresent }]}>
+                      {player.total}p
+                    </Text>
+                  </View>
+                  <View style={styles.playerStats}>
+                    <Text style={[styles.playerStat, { color: colors.textSecondary }]}>
+                      🎯 En iyi: {player.best}p
+                    </Text>
+                    <Text style={[styles.playerStat, { color: colors.textSecondary }]}>
+                      📊 Ort: {player.records.length ? (player.total / player.records.length).toFixed(0) : 0}p
+                    </Text>
+                  </View>
+                  {player.records.length > 0 && (
+                    <View style={styles.gameList}>
+                      {[...player.records].reverse().slice(0, 3).map((rec, i) => (
+                        <View key={i} style={[styles.gameRow, { borderColor: colors.tileBorder }]}>
+                          <Text style={[styles.gameGuess, { color: rec.won ? colors.tileCorrect : colors.tilePresent }]}>
+                            {rec.won ? '✓' : '✗'} {rec.guesses}/6
+                          </Text>
+                          <Text style={[styles.gameScoreBadge, { backgroundColor: colors.keyBackground, color: colors.text }]}>
+                            +{rec.score}
+                          </Text>
+                        </View>
+                      ))}
+                      {player.records.length > 3 && (
+                        <Text style={[styles.moreGames, { color: colors.textSecondary }]}>
+                          +{player.records.length - 3} oyun daha
+                        </Text>
+                      )}
+                    </View>
+                  )}
+                  {player.records.length === 0 && (
+                    <Text style={[styles.noGames, { color: colors.textSecondary }]}>Henüz oyun yok</Text>
+                  )}
+                </View>
+              ))}
             </View>
             <TouchableOpacity onPress={handleResetStats} style={styles.resetLink}>
-              <Text style={[styles.resetLinkText, { color: colors.textSecondary }]}>
-                Sıfırla
-              </Text>
+              <Text style={[styles.resetLinkText, { color: colors.textSecondary }]}>Sıfırla</Text>
             </TouchableOpacity>
           </View>
-        )}
+          );
+        })()}
 
         <View style={styles.tileRow}>
           {[0, 1, 2, 3, 4].map((i) => (
@@ -470,34 +495,81 @@ const styles = StyleSheet.create({
   },
   statsBox: {
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginBottom: 16,
     borderWidth: 1,
     borderRadius: 12,
-    paddingVertical: 12,
+    paddingVertical: 10,
+  },
+  statsBoxTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    gap: 8,
   },
   statsPlayer: {
-    alignItems: 'center',
     flex: 1,
   },
-  statsPlayerTitle: {
-    fontSize: 15,
+  playerHeader: {
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  playerTitle: {
+    fontSize: 13,
     fontWeight: 'bold',
-    marginBottom: 4,
   },
-  statsLine: {
+  playerScore: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  playerStats: {
+    paddingHorizontal: 4,
+    marginBottom: 6,
+  },
+  playerStat: {
+    fontSize: 11,
+    lineHeight: 17,
+  },
+  gameList: {
+    gap: 3,
+  },
+  gameRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderBottomWidth: 0.5,
+  },
+  gameGuess: {
     fontSize: 12,
-    lineHeight: 18,
-    flexShrink: 1,
+    fontWeight: 'bold',
   },
-  statsDivider: {
-    width: 1,
-    backgroundColor: 'rgba(128,128,128,0.3)',
-    marginHorizontal: 8,
+  gameScoreBadge: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
+  moreGames: {
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  noGames: {
+    fontSize: 11,
+    textAlign: 'center',
+    marginTop: 4,
   },
   resetLink: {
     alignItems: 'center',
