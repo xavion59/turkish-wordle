@@ -9,6 +9,7 @@
     "newArchEnabled": false,
     "scheme": "turkishwordle",
     "splash": {
+      "image": "./assets/splash-icon.png",
       "backgroundColor": "#121213",
       "resizeMode": "contain"
     },
