@@ -21,7 +21,6 @@ export default function TabLayout() {
         headerTitleStyle: {
           color: colors.text,
         },
-        animation: 'fade',
       }}
     >
       <Tabs.Screen

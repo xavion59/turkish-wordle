@@ -8,6 +8,7 @@ import {
   Modal,
   Alert,
 } from 'react-native';
+import FadeInView from '../../src/components/FadeInView';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useGameLogic } from '../../src/hooks/useGameLogic';
 import { GameBoard } from '../../src/components/GameBoard';
@@ -76,6 +77,7 @@ export default function PairPlayScreen() {
 
   if (!customWord) {
     return (
+      <FadeInView>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={[styles.title, { color: colors.text }]}>Eşli Oyun</Text>
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
@@ -175,6 +177,7 @@ export default function PairPlayScreen() {
           />
         </View>
       </View>
+    </FadeInView>
     );
   }
 
@@ -329,13 +332,14 @@ function PairGameView({
   }, [state.gameStatus, state.currentCol, state.hintsUsed, useHint, showMessage]);
 
   return (
+    <FadeInView>
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} style={styles.headerLeft}>
           <Text style={[styles.headerLeftText, { color: colors.text }]}>Yeni Oyun</Text>
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>
-          Eşli Oyun • {player}. Oyuncu
+          {player === 1 ? '1. Oyuncu' : '2. Oyuncu'}
         </Text>
         <TouchableOpacity
           onPress={handleHint}
@@ -439,6 +443,7 @@ function PairGameView({
         )}
       </Modal>
     </View>
+    </FadeInView>
   );
 }
 

@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import FadeInView from '../../src/components/FadeInView';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useStatistics } from '../../src/hooks/useStatistics';
 import { StatsChart } from '../../src/components/StatsChart';
@@ -44,15 +45,18 @@ export default function StatsScreen() {
 
   if (!loaded) {
     return (
-      <View
-        style={[styles.container, { backgroundColor: colors.background }]}
-      >
-        <Text style={{ color: colors.text }}>Yükleniyor...</Text>
-      </View>
+      <FadeInView>
+        <View
+          style={[styles.container, { backgroundColor: colors.background }]}
+        >
+          <Text style={{ color: colors.text }}>Yükleniyor...</Text>
+        </View>
+      </FadeInView>
     );
   }
 
   return (
+    <FadeInView>
     <ScrollView style={[styles.scroll, { backgroundColor: colors.background }]}>
       <View style={styles.container}>
         <Text style={[styles.title, { color: colors.text }]}>
@@ -135,6 +139,7 @@ export default function StatsScreen() {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </FadeInView>
   );
 }
 
