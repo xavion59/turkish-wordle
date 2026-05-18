@@ -25,11 +25,7 @@ export default function FadeInView({ children, style }: Props) {
   return (
     <Animated.View
       style={[
-        {
-          flex: 1,
-          opacity: anim,
-          transform: [{ scale: anim }],
-        },
+        { flex: 1, opacity: anim },
         style,
       ]}
     >
